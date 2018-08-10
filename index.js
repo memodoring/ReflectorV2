@@ -18,7 +18,11 @@ const IntentReflectorHandler ={
   },
   handle(handlerInput){
     const intentName = handlerInput.requestEnvelope.request.intent.name;
-    //To Do: add support for slots
+    const slotsInRequest = handlerInput.requestEnvelope.request.intent.slots;
+    const slotValues = getSlotValues(slotsInRequest);
+    console.log(`~~~~~~~~~~~~~~~~~~~`);
+    console.log(`Slots`+ " "+slotValues);
+    console.log(`~~~~~~~~~~~~~~~~~~~`);
     //To Do: add support for locale
     return handlerInput.responseBuilder
       .speak(intentName)
