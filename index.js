@@ -81,3 +81,58 @@ exports.handler = skillBuilder
     GenericErrorHandler
   )
   .lambda();
+
+//=========================================================================================================================================
+//Helper functions
+//=========================================================================================================================================
+
+function getSlotValues(filledSlots) {
+  const slotValues = {};
+
+  console.log(`The filled slots: ${JSON.stringify(filledSlots)}`);
+  Object.keys(filledSlots).forEach((item) => {
+      const name = filledSlots[item].name;
+
+      if (filledSlots[item] &&
+      filledSlots[item].resolutions &&
+      filledSlots[item].resolutions.resolutionsPerAuthority[0] &&
+      filledSlots[item].resolutions.resolutionsPerAuthority[0].status &&
+      filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) {
+      switch (filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) {
+          case 'ER_SUCCESS_MATCH':
+          slotValues[name] = {
+              synonym: filledSlots[item].value,
+              value: filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.name,
+              id: filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id,
+              isValidated: true,
+              canUnderstand: "YES",
+              canFulfill: "YES",
+          };
+          break;
+          case 'ER_SUCCESS_NO_MATCH':
+          slotValues[name] = {
+              synonym: filledSlots[item].value,
+              value: filledSlots[item].value,
+              id: null,
+              isValidated: false,
+              canUnderstand: "NO",
+              canFulfill: "MAYBE",            
+          };
+          break;
+          default:
+          break;
+      }
+      } else {
+      slotValues[name] = {
+          synonym: filledSlots[item].value,
+          value: filledSlots[item].value,
+          id: filledSlots[item].id,
+          isValidated: false,
+          canUnderstand: "NO",
+          canFulfill: "NO",        
+      };
+      }
+  }, this);
+
+  return slotValues;
+}
