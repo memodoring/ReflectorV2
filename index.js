@@ -64,7 +64,6 @@ const GenericErrorHandler = {
 
     return handlerInput.responseBuilder
       .speak(`There was an error. The stack trace has been logged to Cloud-Watch.`)
-      .reprompt(`Sorry, an error occurred.`)
       .getResponse();
   },
 };
